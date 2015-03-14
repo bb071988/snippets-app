@@ -35,10 +35,15 @@ def get(name):
     command = "select message from snippets where keyword=(%s)"
     cursor.execute(command, (name,))  #*** *** *** syntax here seems to want cursor.execute to come in as a list[] or need to keep comma after name
     row = cursor.fetchone()
-    connection.commit()
-    logging.debug("Snippet retrieved successfully.")
-    return row[0], name # returns the first element in the tuple that cursor.execute creates and cursor.fetchone returns
-
+    
+    if not row:  
+        connection.commit()
+        logging.debug("Snippet retrieved successfully.")
+        return row[0], name # returns the first element in the tuple that cursor.execute creates and cursor.fetchone returns
+    else:
+        print "No such snippet in the database"
+        return "Search Error", name
+        
 def main():
     """Main function"""
     
