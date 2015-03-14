@@ -32,12 +32,12 @@ def get(name):
     
     logging.info("Getting snippet for {!r}".format(name))
     cursor=connection.cursor()
-    command = "select message from snippets where keyword='(%s)'"
-    cursor.execute(command, name)
+    command = "select message from snippets where keyword=(%s)"
+    cursor.execute(command, (name,))  #*** *** *** syntax here seems to want cursor.execute to come in as a list[] or need to keep comma after name
+    row = cursor.fetchone()
     connection.commit()
-    logging.debug("Snippet stored successfully.")
-    return name
-
+    logging.debug("Snippet retrieved successfully.")
+    return row[0], name # returns the first element in the tuple that cursor.execute creates and cursor.fetchone returns
 
 def main():
     """Main function"""
@@ -77,7 +77,8 @@ def main():
     elif command == "get":
         print("")
         snippet = get(**arguments)
-        print "Retrieved snippet: {!r}".format(snippet)
+        print "Retrieved snippet: {!r} based on search term {!r}".format(snippet[0],snippet[1])
+        
     
     
 
