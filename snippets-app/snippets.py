@@ -11,7 +11,32 @@ connection = psycopg2.connect("dbname='snippets' user='action' host='localhost'"
 logging.debug("Database connection established.")
 
 
+def like_find(like_string):
+    
+    print "printing likestring {}".format(like_string)
+    logging.info("find a like snippet")
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select * from snippets where message like %s ",('%like_string%', ))
+#         cursor.execute("select * from snippets where message like '%test%'") # this works
+        row = cursor.fetchall()
+# select * from table where prescription like '%cowbell%'
+   
+    logging.debug("Snippets retrieved successfully.")
+    print row
+    return row
 
+
+def catalog():
+    logging.info("Listing all the snippets")
+#     print ("im in the catalog function")
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select keyword from snippets order by keyword")
+        row = cursor.fetchall()
+
+   
+    logging.debug("Snippets retrieved successfully.")
+    return row
+    
 def put(name, snippet):
     """Store a snippet with an associated name."""
     logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
@@ -56,6 +81,19 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # Subparser for the catalog
+    logging.debug("Constructing catalog subparser")
+    cat_parser = subparsers.add_parser("cat", help="Show catalog of snippet")
+#     cat_parser.add_argument("name", help="The name of the snippet")
+#     put_parser.add_argument("snippet", help="The snippet text")
+
+    
+    # Subparser for the like command
+    logging.debug("Constructing put subparser")
+    like_parser = subparsers.add_parser("like", help="find a snippet")
+    like_parser.add_argument("like_string", help="string we are searching for in the snippet")
+     
+        
     # Subparser for the put command
     logging.debug("Constructing put subparser")
     put_parser = subparsers.add_parser("put", help="Store a snippet")
@@ -82,13 +120,24 @@ def main():
     if command == "put":
         name, snippet = put(**arguments)
         print("Stored {!r} as {!r}".format(snippet, name))
+    
     elif command == "get":
         print("")
         snippet = get(**arguments)
         print "Retrieved snippet: {!r} based on search term {!r}".format(snippet[0],snippet[1])
         
-    
-    
+    elif command =="cat":  ########### ask Sam about this.  Should we use enumerate here?
+        row = catalog()
+        for name, snippet in enumerate(row):
+            print snippet[0]
+            
+    elif command =="like":
+        
+        row = like_find(**arguments)
+#         row = like(like_string)
+        for name, snippet in enumerate(row):
+            print snippet[1], snippet[0]
+        
 
 if __name__ == "__main__":
     main()
