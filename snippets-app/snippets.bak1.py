@@ -16,15 +16,12 @@ def put(name, snippet):
     """Store a snippet with an associated name."""
     logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
     cursor = connection.cursor()
-
-    with connection, connection.cursor() as cursor:
-            cursor.execute("insert into snippets values (%s, %s)", (name,snippet))
-            #row = cursor.fetchone()
-   
+    command = "insert into snippets values (%s, %s)" 
+    cursor.execute(command, (name, snippet))
+    connection.commit()
     logging.debug("Snippet stored successfully.")
     return name, snippet
 
-#Using a cursor as a context manager
 
 def get(name):
     """Retrieve the snippet with a given name.
@@ -34,18 +31,18 @@ def get(name):
     """
     
     logging.info("Getting snippet for {!r}".format(name))
-    with connection, connection.cursor() as cursor:
-            cursor.execute("select message from snippets where keyword=%s", (name,))
-            row = cursor.fetchone()
+    cursor=connection.cursor()
+    command = "select message from snippets where keyword=(%s)"
+    cursor.execute(command, (name,))  #*** *** *** syntax here seems to want cursor.execute to come in as a list[] or need to keep comma after name
+    row = cursor.fetchone()
     
-    if row:  
-        #connection.commit()
+    if not row:  
+        connection.commit()
         logging.debug("Snippet retrieved successfully.")
         return row[0], name # returns the first element in the tuple that cursor.execute creates and cursor.fetchone returns
     else:
         print "No such snippet in the database"
         return "Search Error", name
-    
         
 def main():
     """Main function"""
