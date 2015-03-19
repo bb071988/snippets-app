@@ -12,23 +12,19 @@ logging.debug("Database connection established.")
 
 
 def like_find(like_string):
-    
-    print "printing likestring {}".format(like_string)
+        
     logging.info("find a like snippet")
     with connection, connection.cursor() as cursor:
-        cursor.execute("select * from snippets where message like %s ",('%like_string%', ))
-#         cursor.execute("select * from snippets where message like '%test%'") # this works
+        command = """select message from snippets where keyword like %s"""   # ask Sam why this works
+        cursor.execute(command, ("%{}%".format(like_string),))
         row = cursor.fetchall()
-# select * from table where prescription like '%cowbell%'
    
     logging.debug("Snippets retrieved successfully.")
-    print row
     return row
 
 
 def catalog():
     logging.info("Listing all the snippets")
-#     print ("im in the catalog function")
     with connection, connection.cursor() as cursor:
         cursor.execute("select keyword from snippets order by keyword")
         row = cursor.fetchall()
@@ -44,7 +40,7 @@ def put(name, snippet):
 
     with connection, connection.cursor() as cursor:
             cursor.execute("insert into snippets values (%s, %s)", (name,snippet))
-            #row = cursor.fetchone()
+           
    
     logging.debug("Snippet stored successfully.")
     return name, snippet
@@ -136,7 +132,7 @@ def main():
         row = like_find(**arguments)
 #         row = like(like_string)
         for name, snippet in enumerate(row):
-            print snippet[1], snippet[0]
+            print snippet[0]
         
 
 if __name__ == "__main__":
