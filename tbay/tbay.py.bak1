@@ -1,0 +1,109 @@
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+
+engine = create_engine('postgresql://action:action@localhost:5432/tbay')
+Session = sessionmaker(bind=engine)
+session = Session()
+Base = declarative_base()
+
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime, Float
+
+class Item(Base):
+    __tablename__ = "items"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    description = Column(String)
+    start_time = Column(DateTime, default=datetime.utcnow)
+    
+class User(Base):
+    __tablename__ = "users"
+   
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable = False)
+    password = Column(String, nullable = False)
+    
+class Bid(Base):
+    __tablename__ = "bid"
+    
+    id = Column(Integer, primary_key=True)
+    price = Column(Float, nullable = False)
+    
+Base.metadata.create_all(engine) # create the tables if they don't exist
+
+
+#############################  second part
+# from datetime import datetime
+# from tbay import User, Item, Bid, session
+
+bob = User()
+bob.username = "bob"
+bob.password = "secret"
+session.add(bob)
+session.commit()
+
+dom = User()
+dom.username = "dom"
+dom.password = "secret"
+session.add(dom)
+session.commit()
+
+baseball = Item()
+baseball.name = "newbaseball"
+baseball.description = "almost new baseball"
+session.add(baseball)
+session.commit()
+
+football = Item()
+football.name = "newfootball"
+football.description = "brand new football"
+session.add(football)
+session.commit()
+
+
+# Returns a list of all of the user objects
+users = session.query(User).all() # Returns a list of all of the user o
+
+print users
+for u in users:
+    print u.username
+
+# Returns the first user
+user1 = session.query(User).first()
+print user1
+print user1.username
+
+# Finds the user with the primary key equal to 1
+session.query(User).get(1)
+
+# Returns a list of all of the usernames in ascending order
+session.query(User.username).order_by(User.username).all()
+
+# Returns the description of all of the basesballs
+session.query(Item.description).filter(Item.name == "baseball").all()
+
+# Return the item id and description for all baseballs which were created in the past.  Remember to import the datetime object: from datetime import datetime
+session.query(Item.id, Item.description).filter(Item.name == "baseball", Item.start_time < datetime.utcnow()).all()
+
+# deleting a user
+user = session.query(User).first()
+session.delete(user)
+session.commit()
+
+# updating the user
+user = session.query(User).first()
+user.username = "bobupdated"
+session.commit()
+
+
+
+
+
+
+
+
