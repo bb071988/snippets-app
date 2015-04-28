@@ -1,54 +1,14 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Flask Template Example</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            div#main {
-                max-width: 500px;
-                padding: 20px;
-            }
+{% extends "base.html" %}
 
-            nav .title {                                                        
-                font-weight: bold;
-            }
-
-            a.active {
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="main">
-            <!DOCTYPE html>
-<html>
-    <head>
-        <title>Jedi Name Example</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            div#main {
-                max-width: 500px;
-                padding: 20px;
-            }
-
-            nav .title {                                                        
-                font-weight: bold;
-            }
-
-            a.active {
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="main">
-                <h3>This part does the Jedi Name trick</h3>
+{% block content %}
+   <div id="Jedi">
+        <h3>This part does the Jedi Name trick</h3>
         <br>
         <p>My first name is: {{first_name}}</p>
         <p>My last name is: {{last_name}}</p>
         <p>My Jedi name is: {{jedi_name}}</p>
         <p>In ten years I will be: {{future_age}}</p>
-        </div>
-    </body>
-</html>
+     </div>
+{% endblock %}
+
         

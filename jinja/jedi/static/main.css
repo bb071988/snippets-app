@@ -1,0 +1,19 @@
+#main {
+max-width: 500px;
+padding: 20px;
+}
+
+#Jedi {color: red;
+}
+
+nav .title {
+font-weight: bold;
+}
+
+a.active {
+font-weight: bold;
+}
+
+h3 {
+    color:blue;
+}
